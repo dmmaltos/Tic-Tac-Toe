@@ -1,2 +1,2 @@
-# Tic-Tac-Toe
-CS301 Assembly Language Programming Project
+# CS301 Assembly Language Programming Project: Tic-Tac-Toe
+
