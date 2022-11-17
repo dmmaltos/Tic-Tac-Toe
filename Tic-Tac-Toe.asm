@@ -23,7 +23,7 @@ section .data
 	player_size equ $-player
 
 	win:
-		 db -1
+		db 0
 	
 	type_integer:
 		db "Please enter an integer 0-8: ", 0
@@ -96,6 +96,7 @@ main_game_loop:
 	call wincheck_start
 
 	cmp byte[win], 1
+	
 	je end_the_game ; if the game is over then this occurs
 	
 	; Keeps the player changing
@@ -109,168 +110,8 @@ print:
 	mov rax, 1
 	mov rdi, 1
 	syscall
-	ret
+	ret	
 
-; Starts the programs process for checking if their is a game winner
-wincheck_start:
-	call wincheck_rows
-	ret
-
-; Intiates the programs process for checking rows for wins (apart of the wincheck sequence)
-wincheck_rows:
-	mov rcx, 0
-	
-	; Keeps the program checking rows
-	loop_wincheck_rows:
-		cmp rcx, 0	; checks first row 
-		je row_first
-
-		cmp rcx, 1	; checks second row
-		je row_second
-
-		cmp rcx, 2	; checks third row
-		je row_third
-	
-		call wincheck_columns ; by calling wincheck_columns here the program now will also start checking the collumns	
-		ret
-	
-	; Defines the first row
-	row_first:
-		mov rsi, 0
-		jmp row_checker
-
-	; Defines the second row
-	row_second:
-		mov rsi, 6
-		jmp row_checker
-
-	; Defines the third row
-	row_third:
-		mov rsi, 12
-		jmp row_checker
-
-	; Actually checks the rows
-	row_checker:
-		inc rcx
-		lea rbx, [draw_the_board + rsi]
-		mov al, [ebx]
-		cmp al, "_"	
-		je loop_wincheck_rows
-
-		add rsi, 2
-                lea rbx, [draw_the_board + rsi]	
-		cmp al, [rbx]
-		jne loop_wincheck_rows
-		
-		add rsi, 2
-                lea rbx, [draw_the_board + rsi]
-		cmp al, [rbx]
-		jne loop_wincheck_rows
-
-	mov byte[win], 1
-	ret
-
-; Main for checking the collumns to see if there is a winner (apart of the wincheck sequence)
-wincheck_columns:
-	mov rcx, 0
-	
-	; Keep the program checking columns
-	loop_wincheck_columns:
-		cmp rcx, 0	; checks first column
-		je column_first
-
-		cmp rcx, 1	; checks second column
-		je column_second
-		
-		cmp rcx, 2	; checks third column
-		je column_third
-		
-		call wincheck_diagonals
-		ret
-
-	; Defines the first column and jumps to actually check it
-	column_first:
-		mov rsi, 0
-		jmp column_checker
-	
-	; Defines the second column and jumps to actually check it
-	column_second:
-		mov rsi, 2
- 		jmp column_checker
-
-	; Defines the third column and jumps to actually check it
-	column_third:
-		mov rsi, 4
-		jmp column_checker
-
-	; Actually checks the columns
-	column_checker:
-		inc rcx
-            	lea rbx, [draw_the_board + rsi]
-		mov al, [rbx]
-		cmp al, "_"
-		je loop_wincheck_columns
-
-		add rsi, 6
-		lea rbx, [draw_the_board + rsi]
-		cmp al, [rbx]
-		jne loop_wincheck_columns
-
-		add rsi, 6
-		lea rbx, [draw_the_board + rsi]
-		cmp al, [rbx]
-		jne loop_wincheck_columns
-		
-		mov byte[win], 1
-		ret
-
-; Main for checking the diagonals of the rows and coloumns for a win
-wincheck_diagonals:
-	mov rcx, 0
-	
-	; Keeps the program checking the diagonals for a win
-	loop_wincheck_diagonals:
-		cmp rcx, 0
-		je diagonals_first ; checks the first diagonal;
-		
-		cmp rcx, 1
-		je diagonals_second ; checks the second diagonal
-		ret
-	
-	; Defines the first diagonal and jumps to actually check it 
-	diagonals_first:
-		mov rsi, 0
-		mov rdx, 8
-		jmp diagonals_checker
-	
-	; Defines the second diagonal and jumps to actually check it
-	diagonals_second:
-		mov rsi, 4
-		mov rdx, 4
-		jmp diagonals_checker
-	
-	; Actually checks the diagonal
-	diagonals_checker:
-		inc rcx
-     		lea rbx, [draw_the_board + rsi]
-		mov al, [rbx]
-		mov al, "_"
-		je loop_wincheck_diagonals
-	
-		add rsi, rdx
-     		lea rbx, [draw_the_board + rsi]
-		cmp al, [rbx]
-		jne loop_wincheck_diagonals
-	
-		add rsi, rdx
-        	lea rbx, [draw_the_board + rsi]
-		cmp al, [rbx]
-		jne loop_wincheck_diagonals
-		
-	mov byte[win], 1
-	ret
-	
-			
 ; Allows user to provide input for their moves
 read_user_input:
 	mov rax, 0
@@ -409,43 +250,209 @@ draw_board_update:
 change_current_player:
 	xor byte[player], 1
 	ret
+; Starts the programs process for checking if their is a game winner
+wincheck_start:
+	call wincheck_rows
+	ret
+
+; Intiates the programs process for checking rows for wins (apart of the wincheck sequence)
+wincheck_rows:
+	mov rcx, 0
+	
+	; Keeps the program checking rows
+	loop_wincheck_rows:
+		cmp rcx, 0	; checks first row 
+		je row_first
+
+		cmp rcx, 1	; checks second row
+		je row_second
+
+		cmp rcx, 2	; checks third row
+		je row_third
+	
+		call wincheck_columns ; by calling wincheck_columns here the program now will also start checking the collumns	
+		ret
+	
+		; Defines the first row
+		row_first:
+			mov rsi, 0
+			jmp row_checker
+
+		; Defines the second row
+		row_second:
+			mov rsi, 6
+			jmp row_checker
+
+		; Defines the third row
+		row_third:
+			mov rsi, 12
+			jmp row_checker
+
+		; Actually checks the rows
+		row_checker:
+			inc rcx
+			lea rbx, [draw_the_board + rsi]
+			mov al, [rbx]
+			cmp al, "_"	
+			je loop_wincheck_rows
+			
+			add rsi, 2
+             		lea rbx, [draw_the_board + rsi]	
+			cmp al, [rbx]
+			jne loop_wincheck_rows
+					
+			add rsi, 2
+               		lea rbx, [draw_the_board + rsi]
+			cmp al, [rbx]
+			jne loop_wincheck_rows
+
+		mov byte[win], 1
+		ret
+
+; Main for checking the collumns to see if there is a winner (apart of the wincheck sequence)
+wincheck_columns:
+	mov rcx, 0
+	
+	; Keep the program checking columns
+	loop_wincheck_columns:
+		cmp rcx, 0	; checks first column
+		je column_first
+
+		cmp rcx, 1	; checks second column
+		je column_second
+		
+		cmp rcx, 2	; checks third column
+		je column_third
+		
+		call wincheck_diagonals
+		ret
+
+		; Defines the first column and jumps to actually check it
+		column_first:
+			mov rsi, 0
+			jmp column_checker
+	
+		; Defines the second column and jumps to actually check it
+		column_second:
+			mov rsi, 2
+ 			jmp column_checker
+
+		; Defines the third column and jumps to actually check it
+		column_third:
+			mov rsi, 4
+			jmp column_checker
+
+		; Actually checks the columns
+		column_checker:
+			inc rcx
+            		lea rbx, [draw_the_board + rsi]
+			mov al, [ebx]
+			cmp al, "_"
+			je loop_wincheck_columns
+
+			add rsi, 6
+			lea rbx, [draw_the_board + rsi]
+			cmp al, [rbx]
+			jne loop_wincheck_columns
+
+			add rsi, 6
+			lea rbx, [draw_the_board + rsi]
+			cmp al, [rbx]
+			jne loop_wincheck_columns
+		
+			mov byte[win], 1
+			ret
+
+; Main for checking the diagonals of the rows and coloumns for a win
+wincheck_diagonals:
+	mov rcx, 0
+	
+	; Keeps the program checking the diagonals for a win
+	loop_wincheck_diagonals:
+		cmp rcx, 0
+		je diagonals_first ; checks the first diagonal;
+		
+		cmp rcx, 1
+		je diagonals_second ; checks the second diagonal
+		ret
+	
+		; Defines the first diagonal and jumps to actually check it 
+		diagonals_first:
+			mov rsi, 0
+			mov rdx, 8
+			jmp diagonals_checker
+	
+		; Defines the second diagonal and jumps to actually check it
+		diagonals_second:
+			mov rsi, 4
+			mov rdx, 4
+			jmp diagonals_checker
+	
+		; Actually checks the diagonal
+		diagonals_checker:
+			inc rcx
+     			lea rbx, [draw_the_board + rsi]
+			mov al, [rbx]
+			mov al, "_"
+			je loop_wincheck_diagonals
+	
+			add rsi, rdx
+     			lea rbx, [draw_the_board + rsi]
+			cmp al, [rbx]
+			jne loop_wincheck_diagonals
+	
+			add rsi, rdx
+        		lea rbx, [draw_the_board + rsi]
+			cmp al, [rbx]
+			jne loop_wincheck_diagonals
+		
+			mov byte[win], 1
+			ret
 
 end_the_game:
-
+	; Creates new line
 	mov rsi, create_new_line
 	mov rdx, create_new_line_size
 	call print
 
+	; Prints the game board
 	mov rsi, draw_the_board
 	mov rdx, draw_the_board_size
 	call print
-
+	
+	; Creates new line
 	mov rsi, create_new_line
 	mov rdx, create_new_line_size
 	call print
 
+	; Prints the end of game message from memory
 	mov rsi, end_the_game_message
 	mov rdx, end_the_game_message_size
 	call print
-
+	
+	; Prints the player message from memory
 	mov rsi, msg_player
 	mov rdx, msg_player_size
 	call print
 
+	; Prints who the player is who won
 	mov rsi, player
 	mov rdx, player_size
 	call print
 	
+	; Prints " wins!" from memmory
 	mov rsi, winner_msg
 	mov rdx, winner_msg_size
 	call print
 
+	; Creates new line
         mov rsi, create_new_line
         mov rdx, create_new_line_size
         call print
-
+	
 	jmp endprogram
 
+; Ends the  program
 endprogram:
 	mov rax, 60
 	mov rdi, 0
