@@ -78,11 +78,12 @@ main_game_loop:
 	; Lets user input for their move
 	repeat_read_user_input:
 		call read_user_input
+
 	cmp rax, 0
 	je repeat_read_user_input
 
 	mov al, [input]
-	sub al, 48	
+	sub al, 48		; 48 = 0 in ASCII, and here we want to convert ASCII to integer	
 	
 	; Continously updates the board according to user input
 	call draw_board_update
