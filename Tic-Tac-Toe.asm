@@ -45,11 +45,6 @@ _start:
 ; This is the programs main function that loops under conditions based on user input
 main_game_loop:
 
-        ; Prints a new line after start message
-        mov rsi, create_new_line
-        mov rdx, create_new_line_size
-        call print
-
         ; Announces the first player
         mov rsi, msg_player
         mov rdx, msg_player_size
@@ -85,9 +80,9 @@ main_game_loop:
 		call read_user_input
 	cmp rax, 0
 	je repeat_read_user_input
-	
+
 	mov al, [input]
-	sub al, 48
+	sub al, 48	
 	
 	; Continously updates the board according to user input
 	call draw_board_update
@@ -96,7 +91,6 @@ main_game_loop:
 	call wincheck_start
 
 	cmp byte[win], 1
-	
 	je end_the_game ; if the game is over then this occurs
 	
 	; Keeps the player changing
@@ -105,11 +99,11 @@ main_game_loop:
 	; Make sure this keeps looping till a player wins
 	jmp main_game_loop
 
-; Allows print to print
+; Allows print to print when called
 print:
 	mov rax, 1
 	mov rdi, 1
-	syscall
+	syscall	
 	ret	
 
 ; Allows user to provide input for their moves
@@ -142,7 +136,7 @@ read_user_input:
 
 ; Main for keeping the board updated based on user input for moves during the game, and replacing "_" on the board with either "x" or "o"
 draw_board_update:
-	cmp rax, 1
+	cmp rax, 1	; if rax is 1 
 	je position_one
 
 	cmp rax, 2
@@ -217,7 +211,7 @@ draw_board_update:
 		jmp board_update_continue
 	
 	board_update_continue:
-		lea rbx, [draw_the_board + rax]
+		lea rbx, [draw_the_board + rax] 
 		mov rsi, player
 
 		; Checks if  its Player 0's turn "_" will be replaced with "x"
@@ -292,7 +286,7 @@ wincheck_rows:
 		row_checker:
 			inc rcx
 			lea rbx, [draw_the_board + rsi]
-			mov al, [rbx]
+			mov al, [ebx]
 			cmp al, "_"	
 			je loop_wincheck_rows
 			
@@ -346,17 +340,19 @@ wincheck_columns:
 		column_checker:
 			inc rcx
             		lea rbx, [draw_the_board + rsi]
-			mov al, [ebx]
+			mov al, [rbx]
 			cmp al, "_"
 			je loop_wincheck_columns
 
 			add rsi, 6
 			lea rbx, [draw_the_board + rsi]
+
 			cmp al, [rbx]
 			jne loop_wincheck_columns
 
 			add rsi, 6
 			lea rbx, [draw_the_board + rsi]
+
 			cmp al, [rbx]
 			jne loop_wincheck_columns
 		
@@ -390,7 +386,7 @@ wincheck_diagonals:
 	
 		; Actually checks the diagonal
 		diagonals_checker:
-			inc rcx
+			inc rcx	
      			lea rbx, [draw_the_board + rsi]
 			mov al, [rbx]
 			mov al, "_"
