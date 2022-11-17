@@ -1,2 +1,4 @@
-# Tic-Tac-Toe
-CS301 Assembly Language Programming Project
+# CS301 Assembly Language Programming Project: Tic-Tac-Toe
+Created by Dylan Maltos
+
+A basic Tic-Tac-Toe game which has been completely written in NASM assembly.
