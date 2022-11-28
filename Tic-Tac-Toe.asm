@@ -76,11 +76,11 @@ main_game_loop:
 	call print
 
 	; Lets user input for their move
-	repeat_read_user_input:
+	.repeat_read_user_input:
 		call read_user_input
 
 	cmp rax, 0
-	je repeat_read_user_input
+	je .repeat_read_user_input
 
 	mov al, [input]
 	sub al, 48		; 48 = 0 in ASCII, and here we want to convert ASCII to integer	
@@ -286,18 +286,22 @@ wincheck_rows:
 		; Actually checks the rows
 		row_checker:
 			inc rcx
+
 			lea rbx, [draw_the_board + rsi]
+
 			mov al, [ebx]
 			cmp al, "_"	
 			je loop_wincheck_rows
 			
 			add rsi, 2
              		lea rbx, [draw_the_board + rsi]	
+
 			cmp al, [rbx]
 			jne loop_wincheck_rows
 					
 			add rsi, 2
                		lea rbx, [draw_the_board + rsi]
+
 			cmp al, [rbx]
 			jne loop_wincheck_rows
 
@@ -340,7 +344,9 @@ wincheck_columns:
 		; Actually checks the columns
 		column_checker:
 			inc rcx
+
             		lea rbx, [draw_the_board + rsi]
+
 			mov al, [rbx]
 			cmp al, "_"
 			je loop_wincheck_columns
@@ -371,40 +377,45 @@ wincheck_diagonals:
 		
 		cmp rcx, 1
 		je diagonals_second ; checks the second diagonal
+
 		ret
 	
-		; Defines the first diagonal and jumps to actually check it 
-		diagonals_first:
-			mov rsi, 0
-			mov rdx, 8
-			jmp diagonals_checker
+	; Defines the first diagonal and jumps to actually check it 
+	diagonals_first:
+		mov rsi, 0
+		mov rdx, 8	; size of the "jump" we are going to make the middle of the diagonal"
+		jmp diagonals_checker
 	
-		; Defines the second diagonal and jumps to actually check it
-		diagonals_second:
-			mov rsi, 4
-			mov rdx, 4
-			jmp diagonals_checker
+	; Defines the second diagonal and jumps to actually check it
+	diagonals_second:
+		mov rsi, 4
+		mov rdx, 4
+		jmp diagonals_checker
 	
-		; Actually checks the diagonal
-		diagonals_checker:
-			inc rcx	
-     			lea rbx, [draw_the_board + rsi]
-			mov al, [rbx]
-			mov al, "_"
-			je loop_wincheck_diagonals
+	; Actually checks the diagonal
+	diagonals_checker:
+		inc rcx	
+
+     		lea rbx, [draw_the_board + rsi]
+
+		mov al, [rbx]
+		mov al, "_"
+		je loop_wincheck_diagonals
 	
-			add rsi, rdx
-     			lea rbx, [draw_the_board + rsi]
-			cmp al, [rbx]
-			jne loop_wincheck_diagonals
+		add rsi, rdx
+     		lea rbx, [draw_the_board + rsi]
+
+		cmp al, [rbx]
+		jne loop_wincheck_diagonals
 	
-			add rsi, rdx
-        		lea rbx, [draw_the_board + rsi]
-			cmp al, [rbx]
-			jne loop_wincheck_diagonals
+		add rsi, rdx
+        	lea rbx, [draw_the_board + rsi]
+
+		cmp al, [rbx]
+		jne loop_wincheck_diagonals
 		
-			mov byte[win], 1
-			ret
+	mov byte[win], 1
+	ret
 
 end_the_game:
 	; Creates new line
