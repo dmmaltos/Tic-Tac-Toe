@@ -9,6 +9,7 @@ A basic Tic-Tac-Toe game which has been completely written in NASM assembly.
 * Print a tic-tac-toe style game board which updates according to user input for the player moves
 * Correctly read user input for player moves
 * Implement a win check feature which notifies when the game is over once a player wins, along with announcing the winner
+* Implement a bitwise swap feature which correctly swaps between player 0 and player 1 after each players move
 
 # How to build and run the program
 
