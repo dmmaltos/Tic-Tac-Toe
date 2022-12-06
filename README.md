@@ -19,3 +19,38 @@ ld -o Tic-Tac-Toe Tic-Tac-Toe.o
 
 ./Tic-Tac-Toe
 </pre>
+
+# Program Structure
+
+	create_new_line:
+		db 10
+	create_new_line_size equ $-create_new_line
+
+	draw_the_board:
+		db "_|_|_", 10
+		db "_|_|_", 10
+		db "_|_|_", 10, 0
+	draw_the_board_size equ $-draw_the_board
+
+	msg_player:
+		db "Player ", 0
+	msg_player_size equ $-msg_player
+
+	player:
+		db "0", 0
+	player_size equ $-player
+
+	win:
+		db 0
+	
+	type_integer:
+		db "Please enter an integer 0-8: ", 0
+	type_integer_size equ $-type_integer 
+
+	end_the_game_message:
+		db "Game over!", 10, 0
+	end_the_game_message_size equ $-end_the_game_message
+
+	winner_msg:
+		db " wins the game!", 0
+	winner_msg_size equ $-winner_msg
