@@ -22,6 +22,8 @@ ld -o Tic-Tac-Toe Tic-Tac-Toe.o
 
 # Program Structure
 
+There are several strings saved to memory under section .data that are used to implement specific functions throughout the game and program. As shown:
+
 	create_new_line:
 		db 10
 	create_new_line_size equ $-create_new_line
