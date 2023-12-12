@@ -57,7 +57,7 @@ There are several strings saved to memory under section .data that are used to i
 	winner_msg:
 		db " wins the game!", 0
 	winner_msg_size equ $-winner_msg
-f
+ 
 # Errors to fix
 
 Currently, I need to go over and figure out an error in the wincheck feature. As of right now it will automatically end the game and declare a winner if someone does not place a move in the middle of the Tic-Tac-Toe gameboard for the first move.
